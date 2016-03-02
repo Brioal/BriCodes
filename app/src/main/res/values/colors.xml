@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#009688</color>
+    <color name="colorPrimaryDark">#3F51B5</color>
+    <color name="colorAccent">#1d897f</color>
+    <color name="color_launcher_tv">#ffffff</color>
+    <color name="color_refresh1">#0c51e4</color>
+    <color name="color_refresh2">#477ddf</color>
+    <color name="color_refresh3">#0ca0ae</color>
+    <color name="color_refresh4">#de5252</color>
+    <color name="color_blank">#000000</color>
+    <color name="color_trans">#44000000</color>
+</resources>

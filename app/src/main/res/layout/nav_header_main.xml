@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="315dp"
+    android:orientation="vertical"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <ImageView
+            android:id="@+id/head_back"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_alignParentTop="true"
+            android:scaleType="centerCrop" />
+
+        <com.brioal.bricodes.view.CircleImageView
+            android:id="@+id/head_headimage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="30dp"
+            android:scaleType="centerCrop"
+            />
+        <TextView
+            android:id="@+id/head_id"
+            android:layout_marginRight="25dp"
+            android:textColor="@color/color_launcher_tv"
+            android:textSize="22dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:text="Brioal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="69dp"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/head_todo"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+            <ImageButton
+
+                android:scaleType="centerInside"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:padding="5dp"
+                android:src="@drawable/todo" />
+            <TextView
+                android:textColor="@color/color_blank"
+                android:textSize="15dp"
+                android:text="随记"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:background="#6e736363"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp">
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="35dp">
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical|left"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:textColor="@color/color_blank"
+            android:text="所有分组"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <ImageButton
+            android:id="@+id/head_refresh"
+            android:background="#00000000"
+            android:scaleType="centerInside"
+            android:src="@drawable/refresh"
+            android:layout_width="25dp"
+            android:layout_height="25dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:background="#6e736363"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp">
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

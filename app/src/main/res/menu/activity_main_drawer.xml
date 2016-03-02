@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:checkable="false"
+            android:title="热门" />
+
+    </group>
+    <group
+        android:id="@+id/group_add" android:checkableBehavior="single">
+
+    </group>
+
+
+</menu>
