@@ -1,6 +1,7 @@
 package com.brioal.bricodes.base;
 
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.datatype.BmobFile;
 
 /**
  * Created by brioal on 16-2-28.
@@ -11,6 +12,8 @@ public class CodeItem extends BmobObject{
     private String mCode ;
     private String index ;
     private String mTime ;
+    private BmobFile mHead ;
+    private String mDesc ;
 
     public CodeItem() {
     }
@@ -21,6 +24,14 @@ public class CodeItem extends BmobObject{
         this.mCode = mCode;
         this.index = index;
         this.mTime = mTime;
+    }
+
+    public BmobFile getmHead() {
+        return mHead;
+    }
+
+    public String getmDesc() {
+        return mDesc;
     }
 
     public String getIndex() {

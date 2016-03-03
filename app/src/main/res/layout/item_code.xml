@@ -1,40 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_margin="8dp"
+    android:background="#DEDEDE"
     android:orientation="vertical"
-    android:layout_height="match_parent">
-    <TextView
-        android:textColor="@color/color_blank"
+    android:layout_height="250dp">
+    <ImageView
 
-        android:typeface="sans"
-        android:paddingTop="18dp"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="10dp"
-        android:text="题目内容"
-        android:id="@+id/item_code_tv_title"
-        android:layout_margin="10dp"
+        android:scaleType="centerInside"
+        android:id="@+id/item_code_tv_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="18dp"/>
+        android:layout_height="100dp" />
     <LinearLayout
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:layout_margin="5dp"
+        android:layout_marginTop="100dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="100dp"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:padding="10dp" >
 
-        <TextView
-            android:textColor="@color/color_blank"
-            android:typeface="sans"
-            android:id="@+id/item_code_tv_time"
-            android:textSize="13dp"
-            android:layout_gravity="right"
-            android:gravity="right"
-            android:text="更新时间"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+
+            <TextView
+                android:id="@+id/item_code_tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:lineSpacingExtra="2dp"
+                android:maxLines="2"
+                android:textColor="#1F1F1F"
+                android:textSize="16sp" />
+
+            <TextView
+                android:text="Desc"
+                android:id="@+id/item_code_tv_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="8dp"
+                android:lineSpacingExtra="1dp"
+                android:textColor="#6B6B6B"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:background="#ffffff"
+        android:padding="10dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="200dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="热门回答"
+            android:textColor="#787878"
+            android:textSize="12sp" />
+        <TextView
+            android:text="时间"
+            android:gravity="right"
+            android:id="@+id/item_code_tv_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#6B6B6B"
+            android:textSize="12sp" />
 
     </LinearLayout>
 
-</RelativeLayout>
+</android.support.v7.widget.CardView>

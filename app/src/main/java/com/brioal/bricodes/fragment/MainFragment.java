@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,6 +25,7 @@ import com.brioal.bricodes.activity.CodeDetailActivity;
 import com.brioal.bricodes.base.CodeItem;
 import com.brioal.bricodes.util.DataBaseHelper;
 import com.brioal.bricodes.util.Util;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,8 +48,8 @@ public class MainFragment extends Fragment {
     SwipeRefreshLayout fragmentMainRefresh;
     @Bind(R.id.fragment_main_error)
     RelativeLayout fragmentMainError;
-    //TODO 代码着色
-    //TODO launcherActivity退出逻辑编写
+
+    //TODO launcherActivity退出逻辑修改 ，防止图片下载未完成退出
 
 
     private List<CodeItem> items;
@@ -111,7 +113,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        new Thread(runnable).start();
+
     }
 
     public void saveData() {
@@ -136,7 +138,7 @@ public class MainFragment extends Fragment {
                 date.setTime(System.currentTimeMillis());
                 query.addWhereLessThan("updatedAt", new BmobDate(date));
             } else {
-                query.addWhereEqualTo("index", index);
+                query.addWhereContains("index", index);
             }
 //返回50条数据，如果不加上这条语句，默认返回10条数据
             query.setLimit(50);
@@ -202,7 +204,7 @@ public class MainFragment extends Fragment {
             adapter = new MyAdapter();
             fragmentMainRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
             DividerLine dividerLine = new DividerLine(DividerLine.VERTICAL);
-            dividerLine.setSize(1);
+            dividerLine.setSize(10);
             dividerLine.setColor(getResources().getColor(R.color.color_trans));
             fragmentMainRecycler.addItemDecoration(dividerLine);
             fragmentMainRecycler.setAdapter(adapter);
@@ -222,7 +224,7 @@ public class MainFragment extends Fragment {
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
 
-            return new MyViewHolder(LayoutInflater.from(getActivity()).inflate(R.layout.item_code, null, false));
+            return new MyViewHolder(LayoutInflater.from(getActivity()).inflate(R.layout.item_code, parent, false));
         }
 
         @Override
@@ -232,6 +234,9 @@ public class MainFragment extends Fragment {
             Log.i(TAG, "onBindViewHolder: " + item.getUpdatedAt());
             holder.mTitle.setText(item.getmTitle());
             holder.mTime.setText(item.getmTime());
+            String url = item.getmHead().getFileUrl(getActivity());
+            Picasso.with(getActivity()).load(url).error(R.drawable.icon).into(holder.mHead);
+            holder.mDesc.setText(item.getmDesc());
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -254,12 +259,16 @@ public class MainFragment extends Fragment {
         private TextView mTitle;
         private TextView mTime;
         private View itemView;
+        private ImageView mHead;
+        private TextView mDesc ;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
             mTime = (TextView) itemView.findViewById(R.id.item_code_tv_time);
             mTitle = (TextView) itemView.findViewById(R.id.item_code_tv_title);
+            mHead = (ImageView) itemView.findViewById(R.id.item_code_tv_image);
+            mDesc = (TextView) itemView.findViewById(R.id.item_code_tv_desc);
         }
     }
 
