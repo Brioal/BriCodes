@@ -4,7 +4,9 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:openDrawer="start">
+
 
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,7 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            android:fitsSystemWindows="true"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <android.support.v7.widget.Toolbar
@@ -30,13 +31,31 @@
         </android.support.design.widget.AppBarLayout>
 
         <RelativeLayout
-
+            android:layout_marginTop="75dp"
             android:id="@+id/main_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="80dp">
+            >
 
         </RelativeLayout>
+
+        <com.lapism.searchview.view.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:focusable="false"
+            android:focusableInTouchMode="true"
+            android:visibility="gone"
+            app:search_animation_duration="360"
+            app:search_divider="true"
+            app:search_hint="搜索.."
+            app:search_hint_size="16sp"
+            app:search_shadow_color="#80000000"
+            app:search_style="menu_item_color"
+            app:search_theme="light"
+            app:search_version="menu_item" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
@@ -44,68 +63,27 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/todo" />
+            android:background="@color/color_refresh2"
 
+            android:src="@drawable/ic_search" />
     </android.support.design.widget.CoordinatorLayout>
 
+
     <LinearLayout
+        android:background="@drawable/headimage"
+        android:fitsSystemWindows="true"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/color_launcher_tv"
+
         android:orientation="vertical">
 
         <RelativeLayout
+            android:fitsSystemWindows="true"
             android:layout_width="match_parent"
-            android:layout_height="200dp">
-
-            <ImageView
-                android:id="@+id/head_back"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_alignParentTop="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/headimage" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_alignParentBottom="true"
-                android:gravity="right"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/head_todo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="20dp"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="4dp">
-
-                    <ImageButton
-
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_weight="1"
-                        android:background="#00000000"
-                        android:padding="5dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/todo" />
-
-                    <TextView
-
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="随记"
-                        android:textColor="@color/color_launcher_tv" />
-
-                </LinearLayout>
+            android:layout_height="100dp">
 
 
-            </LinearLayout>
 
 
         </RelativeLayout>
@@ -135,13 +113,6 @@
                 android:text="所有分组"
                 android:textColor="@color/color_blank" />
 
-            <ImageButton
-                android:id="@+id/list_setting"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:background="#00000000"
-                android:scaleType="centerInside"
-                android:src="@drawable/refresh" />
         </LinearLayout>
 
         <LinearLayout
@@ -152,11 +123,11 @@
         </LinearLayout>
 
         <ListView
-            android:scrollbars="none"
             android:id="@+id/menu_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:scrollbars="none">
 
         </ListView>
 
@@ -168,19 +139,64 @@
             android:gravity="center"
             android:orientation="horizontal">
 
+            <LinearLayout
+                android:id="@+id/main_setting"
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:layout_gravity="left"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="15dp"
-                android:background="@color/color_trans"
-                android:gravity="center_vertical|right"
-                android:text="关于"
-                android:textColor="@color/color_blank" />
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/setting" />
+
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center"
+                    android:text="设置"
+                    android:textColor="@color/color_blank" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/main_todo"
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/about" />
+
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center"
+                    android:text="关于"
+                    android:textColor="@color/color_blank" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
 
     </LinearLayout>
-
 
 </android.support.v4.widget.DrawerLayout>

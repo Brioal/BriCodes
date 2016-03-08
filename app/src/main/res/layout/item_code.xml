@@ -4,27 +4,19 @@
     android:layout_margin="8dp"
     android:background="#DEDEDE"
     android:orientation="vertical"
-    android:layout_height="250dp">
+    android:layout_height="255dp">
     <ImageView
-
-        android:scaleType="centerInside"
+        android:scaleType="fitXY"
         android:id="@+id/item_code_tv_image"
         android:layout_width="match_parent"
-        android:layout_height="100dp" />
+        android:layout_height="130dp" />
     <LinearLayout
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="130dp"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="#ffffff"
         android:orientation="vertical"
         android:padding="10dp" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical" >
-
 
             <TextView
                 android:id="@+id/item_code_tv_title"
@@ -37,34 +29,36 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:layout_marginTop="6dp"
                 android:text="Desc"
                 android:id="@+id/item_code_tv_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
                 android:layout_marginBottom="8dp"
                 android:lineSpacingExtra="1dp"
                 android:textColor="#6B6B6B"
                 android:textSize="14sp" />
 
-        </LinearLayout>
 
     </LinearLayout>
     <LinearLayout
         android:background="#ffffff"
         android:padding="10dp"
         android:orientation="horizontal"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="215dp"
         android:layout_width="match_parent"
-        android:layout_height="40dp">
+        android:layout_height="35dp">
         <TextView
-            android:id="@+id/textView"
+            android:ellipsize="end" android:singleLine="true"
+            android:id="@+id/item_code_tv_index"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="200dp"
             android:text="热门回答"
             android:textColor="#787878"
             android:textSize="12sp" />
         <TextView
+            android:singleLine="true"
             android:text="时间"
             android:gravity="right"
             android:id="@+id/item_code_tv_time"

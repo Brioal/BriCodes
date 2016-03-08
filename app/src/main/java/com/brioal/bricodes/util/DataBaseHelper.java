@@ -10,11 +10,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseHelper extends SQLiteOpenHelper {
     public static int TYPE_CODES = 0;
     public static int TYPE_LISTS = 1;
-    public static int TYPE_TODOS = 2;
     private int type ;
-    final String CREATE_CODE_TABLE = "create table CodeItems(_id integer primary key autoincrement , mTitle , mCode , mTime,mIndex)";
+    final String CREATE_CODE_TABLE = "create table CodeItems(_id integer primary key autoincrement , mTitle , mCode , mTime,mIndex,mUrl ,mDesc)";
     final String CREATE_LIST_TABLE = "create table Lists(_id integer primary key autoincrement , mTitle ,integer isShow,url)";
-    final String CREATE_TODO_TABLE = "create table Todos(_id integer primary key autoincrement , mContent , integer isFinish)";
 
     public DataBaseHelper(Context context, String name, int version, int type) {
         super(context, name, null, version);
@@ -28,8 +26,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_CODE_TABLE);
         } else if (type == DataBaseHelper.TYPE_LISTS) {
             db.execSQL(CREATE_LIST_TABLE);
-        } else {
-            db.execSQL(CREATE_TODO_TABLE);
         }
     }
 

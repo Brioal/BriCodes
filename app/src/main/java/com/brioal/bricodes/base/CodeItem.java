@@ -1,5 +1,7 @@
 package com.brioal.bricodes.base;
 
+import android.content.Context;
+
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobFile;
 
@@ -12,18 +14,28 @@ public class CodeItem extends BmobObject{
     private String mCode ;
     private String index ;
     private String mTime ;
+    private String mUrl ;
     private BmobFile mHead ;
     private String mDesc ;
 
     public CodeItem() {
     }
 
-    public CodeItem(int id, String mTitle, String mCode,  String mTime,String index) {
+    public CodeItem(int id, String mTitle, String mCode,  String mTime,String index,String mUrl , String mDesc ) {
         this.id = id;
         this.mTitle = mTitle;
         this.mCode = mCode;
         this.index = index;
         this.mTime = mTime;
+        this.mUrl = mUrl;
+        this.mDesc = mDesc;
+    }
+
+    public String getUrl(Context context) {
+        if (mUrl!=null) {
+            return mUrl;
+        }
+        return mHead.getFileUrl(context);
     }
 
     public BmobFile getmHead() {

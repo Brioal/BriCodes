@@ -1,14 +1,17 @@
 package com.brioal.bricodes.activity;
 
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.WindowManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.brioal.bricodes.R;
+import com.brioal.bricodes.view.SwipeBackLayout;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,20 +28,22 @@ public class CodeDetailActivity extends AppCompatActivity {
     AppBarLayout appBar;
     @Bind(R.id.activity_code_tv_code)
     WebView activityCodeTvCode;
+    @Bind(R.id.layout)
+    CoordinatorLayout layout ;
+    @Bind(R.id.layout_swipeLayout)
+    SwipeBackLayout swipeBackLayout ;
 
     private String mTitle ;
     private String mCode ;
     private String mTime ;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_code_detail);
-        //透明状态栏
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
         ButterKnife.bind(this);
+
         initData();
         setView();
     }
@@ -52,9 +57,23 @@ public class CodeDetailActivity extends AppCompatActivity {
 
     public void setView() {
         toolbar.setTitle(mTitle);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CodeDetailActivity.this);
+        String color_index = preferences.getString("style_list", "ThemeEclipse");
+        String text_Size = preferences.getString("size_list", 15+"");
+        boolean line_num = preferences.getBoolean("line_num", false);
         activityCodeTvCode.getSettings().setJavaScriptEnabled(true);
-        activityCodeTvCode.loadDataWithBaseURL("file:///android_asset/", getFileContent("code.html").replace("Brioal is HardWorking",mCode), "text/html", null, null);
+        WebSettings mWebSettings = activityCodeTvCode.getSettings();
+        mWebSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        activityCodeTvCode.loadDataWithBaseURL("file:///android_asset/", getFileContent("code.html").replace("Brioal is HardWorking", mCode.replace("gutter: true", "gutter:" + line_num + "")).replace("CoreDefault", color_index).replace("15", text_Size), "text/html", null, null);
         setSupportActionBar(toolbar);
+
+        swipeBackLayout.setCallback(new SwipeBackLayout.Callback() {
+            @Override
+            public void onShouldFinish() {
+                finish();
+                overridePendingTransition(R.anim.no_anim, R.anim.out_tp_right);
+            }
+        });
 
     }
 

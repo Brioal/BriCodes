@@ -9,6 +9,7 @@ import cn.bmob.v3.datatype.BmobFile;
  * Created by brioal on 16-2-28.
  */
 public class MainIndexs extends BmobObject {
+    private int id ;
     private BmobFile headImage ;
     private String index ;
     private int isShow = 0  ; //显示
@@ -35,10 +36,15 @@ public class MainIndexs extends BmobObject {
     }
 
 
-    public MainIndexs(String index, int isShow,String url) {
+    public MainIndexs(String index, int isShow,String url,int id) {
         this.index = index;
         this.isShow = isShow;
         this.url = url;
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getIndex() {

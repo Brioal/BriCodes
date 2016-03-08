@@ -1,0 +1,32 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:icon="@drawable/size_setting"
+        android:summary="设置代码显示的字体的大小"
+        android:entries="@array/pref_size_titles"
+        android:entryValues="@array/pref_size_value"
+        android:key="size_list"
+        android:defaultValue="18"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="代码字体大小" />
+    <ListPreference
+        android:defaultValue="CoreEclipse"
+        android:icon="@drawable/color_setting"
+        android:summary="设置代码的着色风格 ， 默认为Eclipse着色"
+        android:entries="@array/pref_color_list_titles"
+        android:entryValues="@array/pref_color_list_titles"
+        android:key="style_list"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="代码着色风格" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:title="是否显示行号"
+        android:summary="代码的行号设置"
+        android:key="line_num"
+        android:icon="@drawable/line_num"
+        />
+
+</PreferenceScreen>
