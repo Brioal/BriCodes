@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/headimage"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.brioal.bricodes.activity.UserInfoActivity">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="@drawable/headimage">
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            style="@style/MyCustomTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/user_info_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_weight="1"
+                    android:gravity="bottom|left"
+                    android:text="ID"
+                    android:textColor="@color/color_white"
+                    android:textSize="22dp"
+                    android:typeface="sans" />
+
+                <TextView
+                    android:id="@+id/user_info_sex"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|left"
+                    android:text="性别"
+                    android:textColor="@color/color_white"
+                    android:textSize="18dp"
+                    android:typeface="sans" />
+
+            </LinearLayout>
+
+            <com.brioal.bricodes.view.CircleImageView
+                android:id="@+id/user_info_head"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/default_head" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="60dp">
+
+            <TextView
+                android:id="@+id/user_info_tv_mine"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical|left"
+                android:textSize="12sp"
+                android:textColor="@color/color_white"
+                android:typeface="sans"
+                android:text="发表 :"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:id="@+id/user_info_tv_like"
+                android:gravity="center_vertical|left"
+                android:textSize="12sp"
+                android:textColor="@color/color_white"
+                android:typeface="sans"
+                android:text="喜欢:"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+            <Button
+                android:layout_gravity="center_vertical|right"
+                android:id="@+id/user_info_btn_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/btn_corner_back"
+                android:text="退出登陆"
+                android:textColor="@color/color_white"
+                android:typeface="sans" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+</LinearLayout>

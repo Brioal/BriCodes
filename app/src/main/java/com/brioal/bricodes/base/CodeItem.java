@@ -17,11 +17,14 @@ public class CodeItem extends BmobObject{
     private String mUrl ;
     private BmobFile mHead ;
     private String mDesc ;
+    private String mAuther ;
+    private int mRead ;
+    private int mLike ;
 
     public CodeItem() {
     }
 
-    public CodeItem(int id, String mTitle, String mCode,  String mTime,String index,String mUrl , String mDesc ) {
+    public CodeItem(int id, String mTitle, String mCode,  String mTime,String index,String mUrl , String mDesc,String mAuther , int mRead ,int mLike) {
         this.id = id;
         this.mTitle = mTitle;
         this.mCode = mCode;
@@ -29,11 +32,30 @@ public class CodeItem extends BmobObject{
         this.mTime = mTime;
         this.mUrl = mUrl;
         this.mDesc = mDesc;
+        this.mAuther = mAuther;
+        this.mRead = mRead;
+        this.mLike = mLike;
+    }
+
+    public int getmLike() {
+        return mLike;
+    }
+
+    public String getmAuther() {
+        return mAuther;
+    }
+
+    public int getmRead() {
+        return mRead;
     }
 
     public String getUrl(Context context) {
         if (mUrl!=null) {
             return mUrl;
+        }
+
+        if (mHead == null) {
+            return null;
         }
         return mHead.getFileUrl(context);
     }
@@ -71,5 +93,13 @@ public class CodeItem extends BmobObject{
 
     public int getId() {
         return id;
+    }
+
+    public void setmRead(int mRead) {
+        this.mRead = mRead;
+    }
+
+    public void setmLike(int mLike) {
+        this.mLike = mLike;
     }
 }

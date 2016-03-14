@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <Button
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/btn_corner_back"
+        android:textColor="@color/color_white"
+        android:typeface="sans"
+        android:text="拍照"
+        android:id="@+id/bottom_sheet_btn_camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:layout_marginTop="10dp"
+
+        android:padding="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/bottom_sheet_btn_album"
+        android:background="@drawable/btn_corner_back"
+        android:textColor="@color/color_white"
+        android:typeface="sans"
+        android:text="从相册选取"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:padding="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/bottom_sheet_btn_cancel"
+        android:background="@drawable/btn_corner_back"
+        android:textColor="@color/color_white"
+        android:typeface="sans"
+        android:text="取消"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

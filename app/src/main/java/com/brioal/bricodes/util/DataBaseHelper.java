@@ -11,7 +11,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static int TYPE_CODES = 0;
     public static int TYPE_LISTS = 1;
     private int type ;
-    final String CREATE_CODE_TABLE = "create table CodeItems(_id integer primary key autoincrement , mTitle , mCode , mTime,mIndex,mUrl ,mDesc)";
+    final String CREATE_CODE_TABLE = "create table CodeItems(_id integer primary key autoincrement , mTitle , mCode , mTime,mIndex,mUrl ,mDesc,mAuther,integer mRead, mLike)";
     final String CREATE_LIST_TABLE = "create table Lists(_id integer primary key autoincrement , mTitle ,integer isShow,url)";
 
     public DataBaseHelper(Context context, String name, int version, int type) {

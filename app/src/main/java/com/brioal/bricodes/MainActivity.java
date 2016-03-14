@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -12,13 +13,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
@@ -29,12 +28,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.brioal.bricodes.activity.SettingsActivity;
-import com.brioal.bricodes.base.Constants;
+import com.brioal.bricodes.activity.UserActivity;
+import com.brioal.bricodes.activity.UserInfoActivity;
 import com.brioal.bricodes.base.MainIndexs;
-import com.brioal.bricodes.fragment.AboutFragment;
+import com.brioal.bricodes.base.User;
 import com.brioal.bricodes.fragment.MainFragment;
 import com.brioal.bricodes.util.DataBaseHelper;
+import com.brioal.bricodes.util.ImageReader;
 import com.brioal.bricodes.util.Util;
+import com.brioal.bricodes.view.CircleImageView;
 import com.lapism.searchview.view.SearchView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -49,17 +51,18 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.listener.FindListener;
+import me.imid.swipebacklayout.lib.BaseActivity;
+import me.imid.swipebacklayout.lib.StatusBarUtils;
 
 // 详情页面显示标签， 标签列表设置 通过搜索即可
 // 删除行号显示
-//TODO 代码整理
 //滑动返回
 // 代码收藏管理 搜索即可
 // 设置界面 设置代码着色风格  字体大小 行号显示或关闭
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "MainInfo";
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -73,14 +76,19 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     @Bind(R.id.searchView)
     SearchView searchView;
-    @Bind(R.id.main_todo)
-    LinearLayout btn_todo;
     @Bind(R.id.main_setting)
-    LinearLayout btn_setting ;
+    LinearLayout btn_setting;
+    @Bind(R.id.main_head_back)
+    ImageView head_back;
+    @Bind(R.id.main_user_head)
+    CircleImageView user_head;
+    @Bind(R.id.main_head_name)
+    TextView tv_head_name;
+    @Bind(R.id.main_head)
+    RelativeLayout main_head;
 
 
     private MainFragment mainFragment;
-    private AboutFragment aboutFragment;
 
     private DataBaseHelper helper;
     private ImageButton btn_refresh;
@@ -90,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
     private MyBaseAdapter adapter;
     protected ImageLoader imageLoader;
     private DisplayImageOptions options;
+    public static boolean hasLogined = false;
+
+    User userInfo;
 
 
     private android.os.Handler handler = new android.os.Handler() {
@@ -108,20 +119,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Bmob.initialize(this, Constants.appID);
-
-
         ButterKnife.bind(this);
-         //透明状态栏
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            Log.i(TAG, "onCreate: 4.4");
-            drawerLayout.setFitsSystemWindows(false);
-
-        } else {
-//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-
         setData();
         setView();
         mainFragment = new MainFragment(MainActivity.this, "首页");
@@ -192,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
                 .displayer(new FadeInBitmapDisplayer(100))//是否图片加载好后渐入的动画时间
                 .build();//构建完成
         setSupportActionBar(toolbar);
+
         searchView.hide(true);
         fab.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -233,23 +232,6 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-        btn_todo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toolbar.setTitle("关于");
-                if (aboutFragment == null) {
-                    aboutFragment = new AboutFragment();
-                }
-                if (!aboutFragment.isAdded()) {    // 先判断是否被add过
-                    getFragmentManager().beginTransaction().add(mainContainer.getId(), aboutFragment).commit(); // 隐藏当前的fragment，add下一个到Activity中
-                } else {
-                    getFragmentManager().beginTransaction().hide(mainFragment).commit();
-                    getFragmentManager().beginTransaction().show(aboutFragment).commit(); // 隐藏当前的fragment，显示下一个
-                }
-
-                drawerLayout.closeDrawer(GravityCompat.START);
-            }
-        });
         btn_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -264,8 +246,56 @@ public class MainActivity extends AppCompatActivity {
 
 
         toggle.syncState();
+        head_back.setImageBitmap(ImageReader.readBitmap(MainActivity.this, R.drawable.headimage));
+
+        userInfo = BmobUser.getCurrentUser(MainActivity.this, User.class);
+
+        if (userInfo != null) {
+            hasLogined = true;
+            //根据本地的账户信息 获取头像和用户名
+            tv_head_name.setText(userInfo.getUsername());
+            if (Util.isNetworkConnected(MainActivity.this)) {
+                BmobQuery<User> query = new BmobQuery<User>();
+                query.addWhereEqualTo("email", userInfo.getEmail());
+                query.findObjects(this, new FindListener<User>() {
+                    @Override
+                    public void onSuccess(List<User> object) {
+                        hasLogined = true;
+                        // 允许用户使用应用
+                        Log.i(TAG, "onSuccess: " + object.get(0).getUserHead().getFileUrl(MainActivity.this));
+                        ImageLoader.getInstance().displayImage(object.get(0).getUserHead().getFileUrl(MainActivity.this), user_head, options);
+                        tv_head_name.setText(object.get(0).getUsername());
+                        userInfo.setUsername(object.get(0).getUsername());
+                        userInfo.setUserHead(object.get(0).getUserHead());
+                    }
+
+                    @Override
+                    public void onError(int code, String msg) {
+                        //获取用户失败
+                        hasLogined = false;
+                    }
+                });
+            }
 
 
+        } else {
+            //缓存用户对象为空时， 可打开用户注册界面…
+            user_head.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.default_head));
+            tv_head_name.setText("点击登陆");
+            hasLogined = false;
+        }
+
+        main_head.setOnClickListener(this);
+        toolbar.setTitle("首页");
+    }
+
+    @Override
+    protected void onResume() {
+        if (!hasLogined) {
+            tv_head_name.setText("点击登陆");
+            user_head.setImageResource(R.drawable.default_head);
+        }
+        super.onResume();
     }
 
     public void setMenu() {
@@ -278,9 +308,6 @@ public class MainActivity extends AppCompatActivity {
                     String index = String.valueOf(showLists.get(position).getIndex());
                     mainFragment.setIndex(index);
                     toolbar.setTitle(index);
-                    if (aboutFragment != null) {
-                        getFragmentManager().beginTransaction().hide(aboutFragment).commit();
-                    }
 
                     if (!mainFragment.isAdded()) {    // 先判断是否被add过
                         getFragmentManager().beginTransaction().add(mainContainer.getId(), mainFragment).commit(); // 隐藏当前的fragment，add下一个到Activity中
@@ -296,6 +323,7 @@ public class MainActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         }
         Log.i(TAG, "setView: list的大小" + showLists.size());
+        toolbar.setTitle("首页");
     }
 
 
@@ -347,10 +375,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (searchView.isSearchOpen()) {
+            searchView.hide(true);
         } else if (toolbar.getTitle().toString().startsWith("搜索")) {
-            if (aboutFragment != null && aboutFragment.isVisible()) {
-                getFragmentManager().beginTransaction().hide(aboutFragment).commit();
-            }
             mainFragment.setIndex("首页");
             toolbar.setTitle("首页");
             if (!mainFragment.isAdded()) {    // 先判断是否被add过
@@ -368,6 +395,29 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.main_user_head:
+
+                break;
+            case R.id.main_head:
+                if (!hasLogined) {
+                    startActivity(new Intent(MainActivity.this, UserActivity.class));
+                } else {
+                    //打开个人界面
+                    Intent intent = new Intent(MainActivity.this, UserInfoActivity.class);
+                    intent.putExtra("mAuthor", userInfo.getUsername());
+                    intent.putExtra("mEmail", userInfo.getEmail());
+                    intent.putExtra("mHead", userInfo.getUserHead().getFileUrl(MainActivity.this));
+                    startActivity(intent);
+                }
+
+                drawerLayout.closeDrawers();
+                break;
+        }
     }
 
 
@@ -428,5 +478,13 @@ public class MainActivity extends AppCompatActivity {
             return first.getId() - second.getId();
         }
     }
+
+
+    @Override
+    protected void setStatusBar() {
+        StatusBarUtils.setColorForDrawerLayout(this, (DrawerLayout) findViewById(R.id.drawer_layout), getResources()
+                .getColor(R.color.colorPrimary));
+    }
+
 
 }

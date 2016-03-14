@@ -1,6 +1,7 @@
 package com.brioal.bricodes.activity;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -30,11 +31,19 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         ButterKnife.bind(this);
         addPreferencesFromResource(R.xml.pref_general);
         initPre();
-        swipeBackLayout.setCallback(new SwipeBackLayout.Callback(){
+        swipeBackLayout.setCallback(new SwipeBackLayout.Callback() {
             @Override
             public void onShouldFinish() {
                 finish();
                 overridePendingTransition(R.anim.no_anim, R.anim.out_tp_right);
+            }
+        });
+        findPreference("about").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                startActivity(new Intent(SettingsActivity.this,AboutActivity.class));
+                return true;
             }
         });
     }

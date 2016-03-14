@@ -70,21 +70,44 @@
 
 
     <LinearLayout
-        android:background="@drawable/headimage"
-        android:fitsSystemWindows="true"
+        android:fitsSystemWindows="false"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-
+        android:background="@color/color_white"
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/main_head"
             android:fitsSystemWindows="true"
             android:layout_width="match_parent"
-            android:layout_height="100dp">
+            android:layout_height="150dp">
+            <ImageView
+                android:scaleType="centerCrop"
+                android:id="@+id/main_head_back"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
+            <com.brioal.bricodes.view.CircleImageView
+                android:layout_marginLeft="15dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:src="@drawable/icon"
+                android:id="@+id/main_user_head"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
 
-
+            <TextView
+                android:textColor="@color/color_white"
+                android:typeface="sans"
+                android:textSize="22dp"
+                android:layout_marginLeft="140dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:id="@+id/main_head_name"
+                android:text="Id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </RelativeLayout>
 
@@ -167,32 +190,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/main_todo"
-                android:layout_width="100dp"
-                android:layout_height="35dp"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/about" />
-
-                <TextView
-                    android:layout_width="40dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="bottom"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="15dp"
-                    android:gravity="center"
-                    android:text="关于"
-                    android:textColor="@color/color_blank" />
-
-            </LinearLayout>
 
         </LinearLayout>
 

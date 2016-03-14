@@ -28,5 +28,10 @@
         android:key="line_num"
         android:icon="@drawable/line_num"
         />
+    <Preference
+        android:key="about"
+        android:summary="联系作者"
+        android:icon="@drawable/about"
+        android:title="关于" />
 
 </PreferenceScreen>

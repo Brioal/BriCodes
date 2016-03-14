@@ -2,12 +2,17 @@ package com.brioal.bricodes.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -33,6 +38,16 @@ public class CircleImageView extends ImageView {
     public void setImage(Bitmap bitmap) {
         image = bitmap;
 
+    }
+
+    @Override
+    public void setImageDrawable(Drawable drawable) {
+        setImage(drawable2Bitmap(drawable));
+    }
+
+    @Override
+    public void setImageResource(int resId) {
+        setImage(BitmapFactory.decodeResource(getResources(),resId));
     }
 
     public Bitmap getRound(Bitmap bitmap) {
@@ -96,8 +111,28 @@ public class CircleImageView extends ImageView {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        canvas.drawBitmap(getRound(image), null, new RectF(10, 10, width, width
+        canvas.drawBitmap(getRound(image), null, new RectF(1, 1, width, width
         ), new Paint());
 
+    }
+
+    Bitmap drawable2Bitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        } else if (drawable instanceof NinePatchDrawable) {
+            Bitmap bitmap = Bitmap
+                    .createBitmap(
+                            drawable.getIntrinsicWidth(),
+                            drawable.getIntrinsicHeight(),
+                            drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+                                    : Bitmap.Config.RGB_565);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight());
+            drawable.draw(canvas);
+            return bitmap;
+        } else {
+            return null;
+        }
     }
 }

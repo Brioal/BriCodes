@@ -1,10 +1,41 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".activity.LauncherActivity">
+    tools:context=".activity.CodeDetailActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/font_size"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:title="字体大小"
+        app:showAsAction="never">
+        <menu >
+            <item
+                android:title="小" />
+            <item android:title="中" />
+            <item android:title="大" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/code_style"
+        android:orderInCategory="100"
+        android:title="代码风格"
+        app:showAsAction="never">
+        <menu >
+            <item android:title="light1" />
+            <item android:title="light2" />
+            <item android:title="light3" />
+            <item android:title="light4" />
+            <item android:title="night1" />
+            <item android:title="night2" />
+            <item android:title="night3" />
+            <item android:title="night4" />
+        </menu>
+    </item>
+    <item
+
+
+        android:id="@+id/showline"
+        android:title="行号显示"
+
+        android:checkable="true"/>
+
 </menu>

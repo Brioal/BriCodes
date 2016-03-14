@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -25,13 +24,12 @@ import android.widget.TextView;
 import com.brioal.bricodes.R;
 import com.brioal.bricodes.activity.CodeDetailActivity;
 import com.brioal.bricodes.base.CodeItem;
+import com.brioal.bricodes.base.Constants;
+import com.brioal.bricodes.base.User;
 import com.brioal.bricodes.util.DataBaseHelper;
 import com.brioal.bricodes.util.Util;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.brioal.bricodes.view.CircleImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +60,8 @@ public class MainFragment extends Fragment {
     private Context context;
 
     protected ImageLoader imageLoader;
-    DisplayImageOptions options;
+    private int ITEM_WITH_PIC = 0;
+    private int ITEM_NO_PIC = 1;
 
 
     private Handler handler = new Handler() {
@@ -91,6 +90,7 @@ public class MainFragment extends Fragment {
     public MainFragment() {
 
     }
+
     @SuppressLint("ValidFragment")
     public MainFragment(Context context, String index) {
         this.context = context;
@@ -115,6 +115,7 @@ public class MainFragment extends Fragment {
         fragmentMainRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+
                 new Thread(runnable).start();
             }
         });
@@ -136,7 +137,7 @@ public class MainFragment extends Fragment {
         try {
             for (int i = 0; i < items.size(); i++) {
                 CodeItem item = items.get(i);
-                dataBaseHelper.getReadableDatabase().execSQL("insert into CodeItems values(null,?,?,?,?,?,?)", new String[]{item.getmTitle(), item.getmCode(), item.getmTime(), item.getIndex(), item.getUrl(getActivity()), item.getmDesc()});
+                dataBaseHelper.getReadableDatabase().execSQL("insert into CodeItems values(null,?,?,?,?,?,?,?,?,?)", new Object[]{item.getmTitle(), item.getmCode(), item.getmTime(), item.getIndex(), item.getUrl(getActivity()), item.getmDesc(), item.getmAuther(), item.getmRead(), item.getmLike()});
 
             }
             if (dataBaseHelper != null) {
@@ -145,14 +146,13 @@ public class MainFragment extends Fragment {
         } catch (Exception e) {
 
         }
-
     }
 
     public void initData() {
+        getSavedData();
         if (Util.isNetworkConnected(context)) {
             BmobQuery<CodeItem> query = new BmobQuery<CodeItem>();
             List<BmobQuery<CodeItem>> queries = new ArrayList<BmobQuery<CodeItem>>();
-//查询playerName叫“比目”的数据
             if (index.equals("首页")) {
                 Date date = new Date();
                 date.setTime(System.currentTimeMillis());
@@ -174,9 +174,7 @@ public class MainFragment extends Fragment {
 
             }
             query.or(queries);
-//返回50条数据，如果不加上这条语句，默认返回10条数据
             query.setLimit(50);
-//执行查询方法
             query.findObjects(getActivity(), new FindListener<CodeItem>() {
                 @Override
                 public void onSuccess(List<CodeItem> list) {
@@ -186,13 +184,11 @@ public class MainFragment extends Fragment {
                     }
                     items = list;
                     Log.i(TAG, "onSuccess: " + items.size());
-//                    if (items != null) {
                     if (index.equals("首页")) {
 
                         saveData();
                     }
                     handler.sendEmptyMessage(0x123);
-//                    }
                 }
 
                 @Override
@@ -200,8 +196,6 @@ public class MainFragment extends Fragment {
                     Log.i(TAG, "onError: 获取数据失败,读取本地数据" + s);
                 }
             });
-        } else {
-            getSavedData();
         }
 
 
@@ -225,7 +219,7 @@ public class MainFragment extends Fragment {
         CodeItem item = null;
         while (cursor.moveToNext()) {
             Log.i(TAG, "getSavedData: " + cursor.getString(4));
-            item = new CodeItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6));
+            item = new CodeItem(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getInt(8), cursor.getInt(9));
             items.add(item);
         }
         handler.sendEmptyMessage(0x123);
@@ -233,27 +227,7 @@ public class MainFragment extends Fragment {
     }
 
     public void setViews() {
-
         imageLoader = ImageLoader.getInstance();
-
-
-        options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.icon) //设置图片在下载期间显示的图片
-                .showImageForEmptyUri(R.drawable.icon)//设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(R.drawable.icon)  //设置图片加载/解码过程中错误时候显示的图片
-                .cacheInMemory(true)//设置下载的图片是否缓存在内存中
-                .cacheOnDisc(true)//设置下载的图片是否缓存在SD卡中
-                .considerExifParams(true)  //是否考虑JPEG图像EXIF参数（旋转，翻转）
-                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)//设置图片以如何的编码方式显示
-                .bitmapConfig(Bitmap.Config.RGB_565)//设置图片的解码类型//
-//                .decodingOptions(android.graphics.BitmapFactory.Options.decodingOptions)//设置图片的解码配置
-                        //.delayBeforeLoading(int delayInMillis)//int delayInMillis为你设置的下载前的延迟时间
-                        //设置图片加入缓存前，对bitmap进行设置
-                        //.preProcessor(BitmapProcessor preProcessor)
-                .resetViewBeforeLoading(true)//设置图片在下载前是否重置，复位
-                .displayer(new RoundedBitmapDisplayer(20))//是否设置为圆角，弧度为多少
-                .displayer(new FadeInBitmapDisplayer(100))//是否图片加载好后渐入的动画时间
-                .build();//构建完成
 
         if (items.size() == 0) { //查询不到数据
             fragmentMainRecycler.setVisibility(View.GONE);
@@ -261,13 +235,17 @@ public class MainFragment extends Fragment {
         } else {
             fragmentMainRecycler.setVisibility(View.VISIBLE);
             fragmentMainError.setVisibility(View.GONE);
-            adapter = new MyAdapter();
-            fragmentMainRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-            DividerLine dividerLine = new DividerLine(DividerLine.VERTICAL);
+           DividerLine dividerLine =new  DividerLine(DividerLine.VERTICAL);
             dividerLine.setSize(10);
             dividerLine.setColor(getResources().getColor(R.color.color_trans));
-            fragmentMainRecycler.addItemDecoration(dividerLine);
-            fragmentMainRecycler.setAdapter(adapter);
+            if (adapter == null) {
+                fragmentMainRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+                adapter = new MyAdapter();
+                fragmentMainRecycler.addItemDecoration(dividerLine);
+                fragmentMainRecycler.setAdapter(adapter);
+            } else {
+                adapter.notifyDataSetChanged();
+            }
         }
 
     }
@@ -278,39 +256,106 @@ public class MainFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
+    public class MyAdapter extends RecyclerView.Adapter {
 
 
         @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-
-            return new MyViewHolder(LayoutInflater.from(getActivity()).inflate(R.layout.item_code, parent, false));
+        public int getItemViewType(int position) {
+            if (items.get(position).getUrl(getActivity()) == null) {
+                return ITEM_NO_PIC;
+            } else {
+                return ITEM_WITH_PIC;
+            }
         }
 
         @Override
-        public void onBindViewHolder(MyViewHolder holder, final int position) {
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+            if (viewType == ITEM_WITH_PIC) {
+                return new MyViewHolder_pic(LayoutInflater.from(getActivity()).inflate(R.layout.item_code_pic, parent, false));
+            } else {
+                return new MyViewHolder((LayoutInflater.from(getActivity()).inflate(R.layout.item_code, parent, false)));
+            }
+        }
+        //TODO 还是存在错位问题
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+//            holder.setIsRecyclable(false);
             final CodeItem item = items.get(position);
-            Log.i(TAG, "onBindViewHolder: " + item.getmTitle());
-            Log.i(TAG, "onBindViewHolder: " + item.getUpdatedAt());
-            holder.mTitle.setText(item.getmTitle());
-            holder.mTime.setText(item.getmTime());
-            String url = item.getUrl(getActivity());
-            Log.i(TAG, "onBindViewHolder: " + url);
-            ImageLoader.getInstance().displayImage(url, holder.mHead, options);
-            holder.mDesc.setText(item.getmDesc());
-            holder.mIndex.setText(item.getIndex());
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), CodeDetailActivity.class);
-                    intent.putExtra("mTitle", item.getmTitle());
-                    intent.putExtra("mCode", item.getmCode());
-                    intent.putExtra("mTime", item.getmTime());
-                    startActivity(intent);
-                }
-            });
+            if (holder instanceof MyViewHolder_pic) { // 包含图片
+                final MyViewHolder_pic curholder = (MyViewHolder_pic) holder;
+                curholder.mTitle.setText(item.getmTitle());
+                curholder.mTime.setText(item.getmTime());
+                curholder.mTime.setTag(item.getId());
+                ImageLoader.getInstance().displayImage(item.getUrl(getActivity()), ((MyViewHolder_pic) holder).imageView);
+                curholder.mDesc.setText(item.getmDesc());
+                curholder.mIndex.setText(item.getIndex());
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), CodeDetailActivity.class);
+                        intent.putExtra("id", item.getObjectId());
+                        intent.putExtra("mTitle", item.getmTitle());
+                        intent.putExtra("mCode", item.getmCode());
+                        intent.putExtra("mTime", item.getmTime());
+                        intent.putExtra("mAuther", item.getmAuther());
+                        intent.putExtra("mRead", item.getmRead());
+                        startActivity(intent);
+                    }
+                });
+                BmobQuery<User> query = new BmobQuery<User>();
+                query.addWhereEqualTo("username", item.getmAuther());
+                query.findObjects(getActivity(), new FindListener<User>() {
+                    @Override
+                    public void onSuccess(List<User> object) {
+                        // 允许用户使用应用
+                        Log.i(TAG, "onSuccess: " + object.get(0).getUserHead().getFileUrl(getActivity()));
+                        ImageLoader.getInstance().displayImage(object.get(0).getUserHead().getFileUrl(getActivity()), curholder.mAuthorHead, Constants.options);
+                    }
+
+                    @Override
+                    public void onError(int code, String msg) {
+                        //获取用户失败
+                    }
+                });
+            } else if (holder instanceof MyViewHolder) { // 不包含图片
+                final MyViewHolder curholder1 = (MyViewHolder) holder;
+                curholder1.mTitle.setText(item.getmTitle());
+                curholder1.mTime.setText(item.getmTime());
+                curholder1.mTime.setTag(item.getId());
+                curholder1.mDesc.setText(item.getmDesc());
+                curholder1.mIndex.setText(item.getIndex());
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), CodeDetailActivity.class);
+                        intent.putExtra("id", item.getObjectId());
+                        intent.putExtra("mTitle", item.getmTitle());
+                        intent.putExtra("mCode", item.getmCode());
+                        intent.putExtra("mTime", item.getmTime());
+                        intent.putExtra("mAuther", item.getmAuther());
+                        intent.putExtra("mRead", item.getmRead());
+                        startActivity(intent);
+                    }
+                });
+                BmobQuery<User> query = new BmobQuery<User>();
+                query.addWhereEqualTo("username", item.getmAuther());
+                query.findObjects(getActivity(), new FindListener<User>() {
+                    @Override
+                    public void onSuccess(List<User> object) {
+                        // 允许用户使用应用
+                        Log.i(TAG, "onSuccess: " + object.get(0).getUserHead().getFileUrl(getActivity()));
+                        ImageLoader.getInstance().displayImage(object.get(0).getUserHead().getFileUrl(getActivity()), curholder1.mAuthorHead, Constants.options);
+                    }
+
+                    @Override
+                    public void onError(int code, String msg) {
+                        //获取用户失败
+                    }
+                });
+            }
         }
+
 
         @Override
         public int getItemCount() {
@@ -318,44 +363,52 @@ public class MainFragment extends Fragment {
         }
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder_pic extends RecyclerView.ViewHolder {
         private TextView mTitle;
         private TextView mTime;
         private View itemView;
-        private ImageView mHead;
         private TextView mIndex;
         private TextView mDesc;
+        private CircleImageView mAuthorHead;
+        private ImageView imageView;
+
+        public MyViewHolder_pic(View itemView) {
+            super(itemView);
+            this.itemView = itemView;
+            mTime = (TextView) itemView.findViewById(R.id.item_code_tv_time_pic);
+            mTitle = (TextView) itemView.findViewById(R.id.item_code_tv_title_pic);
+            mDesc = (TextView) itemView.findViewById(R.id.item_code_tv_desc_pic);
+            mIndex = (TextView) itemView.findViewById(R.id.item_code_tv_index_pic);
+            mAuthorHead = (CircleImageView) itemView.findViewById(R.id.item_code_author_head_pic);
+            imageView = (ImageView) itemView.findViewById(R.id.item_code_image_pic);
+        }
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        private TextView mTitle;
+        private TextView mTime;
+        private View itemView;
+        private TextView mIndex;
+        private TextView mDesc;
+        private CircleImageView mAuthorHead;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
             mTime = (TextView) itemView.findViewById(R.id.item_code_tv_time);
             mTitle = (TextView) itemView.findViewById(R.id.item_code_tv_title);
-            mHead = (ImageView) itemView.findViewById(R.id.item_code_tv_image);
             mDesc = (TextView) itemView.findViewById(R.id.item_code_tv_desc);
             mIndex = (TextView) itemView.findViewById(R.id.item_code_tv_index);
+            mAuthorHead = (CircleImageView) itemView.findViewById(R.id.item_code_author_head);
         }
     }
 
     public class DividerLine extends RecyclerView.ItemDecoration {
-        /**
-         * 水平方向
-         */
         public static final int HORIZONTAL = LinearLayoutManager.HORIZONTAL;
-
-        /**
-         * 垂直方向
-         */
         public static final int VERTICAL = LinearLayoutManager.VERTICAL;
-
-        // 画笔
         private Paint paint;
-
-        // 布局方向
         private int orientation;
-        // 分割线颜色
         private int color;
-        // 分割线尺寸
         private int size;
 
         public DividerLine() {
@@ -379,26 +432,15 @@ public class MainFragment extends Fragment {
             }
         }
 
-        /**
-         * 设置分割线颜色
-         *
-         * @param color 颜色
-         */
         public void setColor(int color) {
             this.color = color;
             paint.setColor(color);
         }
 
-        /**
-         * 设置分割线尺寸
-         *
-         * @param size 尺寸
-         */
         public void setSize(int size) {
             this.size = size;
         }
 
-        // 绘制垂直分割线
         protected void drawVertical(Canvas c, RecyclerView parent) {
             final int top = parent.getPaddingTop();
             final int bottom = parent.getHeight() - parent.getPaddingBottom();
@@ -413,7 +455,6 @@ public class MainFragment extends Fragment {
             }
         }
 
-        // 绘制水平分割线
         protected void drawHorizontal(Canvas c, RecyclerView parent) {
             final int left = parent.getPaddingLeft();
             final int right = parent.getWidth() - parent.getPaddingRight();
@@ -431,12 +472,12 @@ public class MainFragment extends Fragment {
     }
 
     //从大到小排序
-    public class SortComparator implements Comparator {
+    public static class SortComparator implements Comparator {
         @Override
         public int compare(Object lhs, Object rhs) {
             CodeItem first = (CodeItem) lhs;
             CodeItem second = (CodeItem) rhs;
-            return -(first.getId() - second.getId());
+            return -(first.getmTime().compareTo(second.getmTime()));
         }
     }
 }
